@@ -6,15 +6,15 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>JOTYY BLOG</title>
+  <title>Android协程——Room | JOTYY BLOG</title>
   <meta name="author" content="John Doe">
   
-  <meta name="description" content="🌌 To be..">
+  <meta name="description" content="在Room2.1版本中提供了对协程的支持。Dao层的方法可以被suspend标记来确保他们在主线程中被执行。接下来，我们就来看看如何使用并为它写一个简单的单元测试。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="Android协程——Room"/>
   <meta property="og:site_name" content="JOTYY BLOG"/>
 
   
@@ -118,7 +118,7 @@ var _hmt = _hmt || [];
 
 	
 		<div class="page-header">
-			<h1> </h1>
+			<h1> Android协程——Room</h1>
 		</div>
 	
 
@@ -133,11 +133,13 @@ var _hmt = _hmt || [];
 
 	<!-- content -->
 	<div class="mypage">		
+	  
+		 <div class="alert alert-success description">
+			<i class="fa fa-info-circle"></i> 在Room2.1版本中提供了对协程的支持。Dao层的方法可以被suspend标记来确保他们在主线程中被执行。接下来，我们就来看看如何使用并为它写一个简单的单元测试。
+		 </div> <!-- alert -->
 	  		
 
-	  <p>title = “Android协程——Room”<br>date = “2019-01-09”<br>author = “Jotyy”<br>description= “在Room2.1版本中提供了对协程的支持。Dao层的方法可以被suspend标记来确保他们在主线程中被执行。接下来，我们就来看看如何使用并为它写一个简单的单元测试。”<br>tags = [“Android”, “Coroutines”]<br>showFullContent = false</p>
-<p>+++</p>
-<p>在Room2.1版本中提供了对协程的支持。Dao层的方法可以被suspend标记来确保他们在主线程中被执行。接下来，我们就来看看如何使用并为它写一个简单的单元测试。</p>
+	  <p>在Room2.1版本中提供了对协程的支持。Dao层的方法可以被suspend标记来确保他们在主线程中被执行。接下来，我们就来看看如何使用并为它写一个简单的单元测试。</p>
 <h2 id="为你的数据库加点suspending"><a href="#为你的数据库加点suspending" class="headerlink" title="为你的数据库加点suspending"></a>为你的数据库加点suspending</h2><p>首先我们要为项目加上Room的依赖，并确保版本在2.1及以上。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation &quot;androidx.room:room-coroutines:$&#123;versions.room&#125;&quot;</span><br></pre></td></tr></table></figure>
 
@@ -182,14 +184,13 @@ var _hmt = _hmt || [];
 
     
     
-    <a href="/2020/11/17/android-ci-lint/" type="button" class="btn btn-default"><i
+    <a href="/2020/11/06/hello-world/" type="button" class="btn btn-default"><i
                 class="fa fa-arrow-circle-o-left"></i> Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/11/06/android-dependency-injection/" type="button" class="btn btn-default ">Next<i
-                class="fa fa-arrow-circle-o-right"></i></a>
+    <a type="button" class="btn btn-default disabled">Next<i class="fa fa-arrow-circle-o-right"></i></a>
     
 
     
@@ -217,7 +218,7 @@ var _hmt = _hmt || [];
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-11-10 
+	2019-01-09 
 	</div>
 	
 
@@ -225,6 +226,14 @@ var _hmt = _hmt || [];
     
 
 	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/Android/">Android<span>1</span></a></li> <li><a href="/tags/Coroutines/">Coroutines<span>1</span></a></li>
+    </ul>
+	</div>
 		
 
 	<!-- toc -->
