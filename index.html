@@ -165,77 +165,6 @@ var _hmt = _hmt || [];
 <p><strong>应用源文件</strong></p>
 <p>源文件包含组成 Android 项目的文件，包括 Java、Kotlin 和 XML 文件、图标以及 ProGuard 配置文件。</p>
 <p><strong><code>lint.xml</code> 文件</strong></p>
-<p>一个配置文件，可用于指定要排除的任何 lint 检查以及自定义问题严重级别。</p>
-<p><strong>lint 工具</strong></p>
-<p>一个静态代码扫描工具，您可以从命令行或在 Android Studio 中对 Android 项目运行该工具。Lint 工具检查可能会影响 Android 应用的质量和性能的代码结构问题。强烈建议您先更正 Lint 检测到的所有错误，然后再发布您的应用。</p>
-<p><strong>lint 检查结果</strong></p>
-<p>你可以在控制台或 Android Studio 的 <strong>Inspection Results</strong> 窗口中查看 lint 检查结果。同时，Android Studio会为你生成一份检查报告保存在build目录下，你可以在浏览器中很方便的看到lint检测到的问题。</p>
-<h2 id="Ⅲ-Java-CheckStyle"><a href="#Ⅲ-Java-CheckStyle" class="headerlink" title="Ⅲ. Java CheckStyle"></a>Ⅲ. Java CheckStyle</h2><p><code>CheckStyle</code>是一个帮助程序员编写符合编码标准的Java代码的开发工具。它使检查Java代码的过程自动化，使人们不必执行这项枯燥(但重要)的任务。这使得它成为想要强制编码标准的项目的理想选择。</p>
-<h4 id="3-1-gradle配置"><a href="#3-1-gradle配置" class="headerlink" title="3.1 gradle配置"></a>3.1 <code>gradle</code>配置</h4><blockquote>
-<p>以下配置基于gradle6.7版本</p>
-</blockquote>
-<h5 id="1-使用插件"><a href="#1-使用插件" class="headerlink" title="1. 使用插件"></a>1. 使用插件</h5><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">&#x27;checkstyle&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>导入<code>checkstyle</code>插件后，会为我们添加几个gradle任务(Task)，此时我们可以运行<code>gradle check</code>来看看，<code>check</code>会运行checkstyle添加的所有任务，包括<code>checkstyleMain</code>和 <code>checkstyleTest</code>。</p>
-<h5 id="2-自定义配置"><a href="#2-自定义配置" class="headerlink" title="2. 自定义配置"></a>2. 自定义配置</h5><p>checkstyle默认使用规范可能不符合团队或公司的要求，我们可以对它进行一些自定义配置，在项目目录下，我们可以新建一个config文件夹，并在文件夹中创建一个<code>checkstyle.xml</code>文件。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">module</span> <span class="attr">name</span>=<span class="string">&quot;SuppressionFilter&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;file&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;config_loc&#125;/suppressions.xml&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">module</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>我们可以参考官网的细则或直接使用Google/Alibaba等大厂的开发规范。</p>
-<h5 id="3-自定义HTML报告"><a href="#3-自定义HTML报告" class="headerlink" title="3. 自定义HTML报告"></a>3. 自定义HTML报告</h5><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tasks.withType(Checkstyle) &#123;</span><br><span class="line">    reports &#123;</span><br><span class="line">        xml.enabled <span class="literal">false</span></span><br><span class="line">        html.enabled <span class="literal">true</span></span><br><span class="line">        html.stylesheet resources.text.fromFile(<span class="string">&#x27;config/xsl/checkstyle-custom.xsl&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="3-2-Android-Studio插件"><a href="#3-2-Android-Studio插件" class="headerlink" title="3.2 Android Studio插件"></a>3.2 Android Studio插件</h4><p><code>checkstyle</code>还支持在Android Studio中使用插件来实现实时代码检测，更加的方便快捷。</p>
-<p>我们可以在Android Studio中下载插件，配置规范文件和版本，非常简单。</p>
-<h4 id="3-3-其它Java-lint工具"><a href="#3-3-其它Java-lint工具" class="headerlink" title="3.3 其它Java lint工具"></a>3.3 其它Java lint工具</h4><p>常用的Java lint工具还有很多，集成方式上和<code>checkstyle</code>也都大同小异，这里我们只提以下他们的用途。</p>
-<h5 id="pmd"><a href="#pmd" class="headerlink" title="pmd"></a>pmd</h5><p>PMD可以发现常见的编程缺陷，如未使用的变量、空的catch块、不必要的对象创建，等等。它支持Java, JavaScript, Salesforce.com Apex和Visualforce, Modelica, PLSQL, Apache Velocity, XML, XSL, Scala。</p>
-<h5 id="SpotBugs"><a href="#SpotBugs" class="headerlink" title="SpotBugs"></a>SpotBugs</h5><p>SpotBugs作为FindBugs的升级版，可以让我们在开发过程中就可以发现一些可能会出现的Bug。SpotBugs可以检测的Bug参考如下：</p>
-<p><a target="_blank" rel="noopener" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#">https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#</a></p>
-<h2 id="Ⅳ-Kotlin-ktlint"><a href="#Ⅳ-Kotlin-ktlint" class="headerlink" title="Ⅳ. Kotlin ktlint"></a>Ⅳ. Kotlin ktlint</h2><p><code>ktlint</code>作为Kotlin项目中应用最广泛的lint工具，无论是大型公司还是开源项目到处都是它的身影；它不仅仅可以检测到代码中的不规范，还可以自动格式化代码，节省了很多人力。</p>
-<h4 id="4-1-Features"><a href="#4-1-Features" class="headerlink" title="4.1 Features"></a>4.1 Features</h4><ul>
-<li><strong>无须配置</strong>。也就是说无须讨论决定使用什么代码规范，也无须去管理特定文件。ktlint会从 <a target="_blank" rel="noopener" href="https://kotlinlang.org/docs/reference/coding-conventions.html">kotlinlang.org</a> 和 <a target="_blank" rel="noopener" href="https://developer.android.com/kotlin/style-guide">Android Kotlin Style Guide</a> 中获取官方代码规范。当然 ktlint 不需要配置规则文件不意味着不允许扩展，ktlint 支持自定义<a target="_blank" rel="noopener" href="https://github.com/shyiko/ktlint#editorconfig">.editorconfig</a> 和<a target="_blank" rel="noopener" href="https://blog.csdn.net/reakingf/article/details/83584857#ruleset">规则集(ruleset)</a>。</li>
-<li><strong>内置格式化工具</strong>。因此你无须手动去修复不规范的代码。</li>
-<li><strong>自定义化输出</strong>。在检查代码格式时，可以指定任何类型的输出，例如<code>plain</code> (+ <code>plain?group_by_file</code>，默认输出格式), <code>json</code>, <code>checkstyle</code> 等类型，同时也很容易<a target="_blank" rel="noopener" href="https://blog.csdn.net/reakingf/article/details/83584857#reporter">创建自己的输出格式</a>。</li>
-<li><strong>已包含所有依赖的单个jar文件</strong>，即不需要引入其他的依赖，只需要下载单个jar文件即可。</li>
-</ul>
-<h4 id="4-2-Usage"><a href="#4-2-Usage" class="headerlink" title="4.2 Usage"></a>4.2 Usage</h4><p>在用法上，对于Android开发的我们，同样是使用gradle集成的方式。与<code>checkstyle</code>大体相同，具体可参照官方文档。</p>
-<h2 id="Ⅴ-题外话之Git规范"><a href="#Ⅴ-题外话之Git规范" class="headerlink" title="Ⅴ. 题外话之Git规范"></a>Ⅴ. 题外话之Git规范</h2><h4 id="5-1-Commit-message"><a href="#5-1-Commit-message" class="headerlink" title="5.1 Commit message"></a>5.1 Commit message</h4><p>Commit message可以使用<code>commitizen</code>等工具来实现选择header，格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h5><ul>
-<li>feat：新功能（feature）</li>
-<li>fix：修补bug</li>
-<li>docs：文档（documentation）</li>
-<li>style： 格式（不影响代码运行的变动）</li>
-<li>refactor：重构（即不是新增功能，也不是修改bug的代码变动）</li>
-<li>test：增加测试</li>
-<li>chore：构建过程或辅助工具的变动</li>
-</ul>
-<h5 id="Scope"><a href="#Scope" class="headerlink" title="Scope"></a>Scope</h5><p>选填项，用来说明本次Commit影响的范围，即简要说明修改会涉及的部分。</p>
-<h5 id="Subject"><a href="#Subject" class="headerlink" title="Subject"></a>Subject</h5><p>用来简要描述本次改动，概述就好了，因为后面还会在Body里给出具体信息。并且最好遵循下面三条:</p>
-<ul>
-<li>以动词开头，使用第一人称现在时，比如change，而不是changed或changes</li>
-<li>首字母不要大写</li>
-<li>结尾不用句号(.)</li>
-</ul>
-<h4 id="5-2-分支管理"><a href="#5-2-分支管理" class="headerlink" title="5.2 分支管理"></a>5.2 分支管理</h4><h5 id="主分支master"><a href="#主分支master" class="headerlink" title="主分支master"></a>主分支master</h5><p>所有提供给使用者使用的正式版本，都在这个主分支上释出。</p>
-<h5 id="开发用分支dev"><a href="#开发用分支dev" class="headerlink" title="开发用分支dev"></a>开发用分支dev</h5><p>用于日常开发。如果想正式对外发布，就在master 分支上，对dev 分支进行『合并』（merge）。</p>
-<h5 id="临时分支"><a href="#临时分支" class="headerlink" title="临时分支"></a>临时分支</h5><p>新的临时分支从origin/master 拉取, 保证程式码最新。使用完毕后，需要及时删除。</p>
-<p>临时分支包括以下两种：</p>
-<h5 id="功能分支"><a href="#功能分支" class="headerlink" title="功能分支"></a>功能分支</h5><p>作用为开发某个特定功能，从dev 分支上分出来，开发完成后需要再合入dev 分支。</p>
-<p>命名规范：<strong>feature-{功能名称}-{姓名缩写}</strong> ，如feature-template-ljl</p>
-<h5 id="bug-修复分支"><a href="#bug-修复分支" class="headerlink" title="bug 修复分支"></a>bug 修复分支</h5><p>作用为修复某个线上bug，从master 分支上分出来，修复结束后再合入dev 和master 分支。</p>
-<p>命名规范：<strong>hotfix-{功能名称}-{姓名缩写}</strong> ，如hotfix-template-tj</p>
-<p>注：bug修复分支需要先<code>merge origin master</code> 以获取最新修改。且该型别的分支只能被合并，不能主动合并除了master分支之外的分支，以避免误带上别的分支。</p>
-<h4 id="5-3-临时提交"><a href="#5-3-临时提交" class="headerlink" title="5.3 临时提交"></a>5.3 临时提交</h4><p>当有临时提交代码的需求但是commit message 不知如何写或者想合并多个commit 时，使用以下两种方式（具体用法自行搜索）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git rebase -i （pick、squash）</span><br><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
-
-<p>另，merge代码时如想合并多个commit，可使用<code>git merge --squash</code> 。</p>
-<h4 id="5-4-Other"><a href="#5-4-Other" class="headerlink" title="5.4 Other"></a>5.4 Other</h4><p>以下内容推荐但不强制（当你明确了解这些操作可能造成什么样的后果以及能解决什么问题时再考虑使用 ）：</p>
-<ol>
-<li>未推送过的分支使用<code>git rebase</code> 代替<code>merge</code> 合并master 分支</li>
-<li>merge 时新增参数–ff`，以启用fast forward 方式</li>
-<li>pull 时新增参数<code>--rebase</code>，使用rebase 策略替代预设的merge 策略</li>
-</ol>
-
 	
 	</div>
   <a type="button" href="/2020/11/17/android-ci-lint/#more" class="btn btn-default more">Read More</a>
@@ -248,11 +177,11 @@ var _hmt = _hmt || [];
 <div class="row">
 	<div class="col-md-8">
 		<h3 class="title">
-			<a href="/2020/11/06/android-dependency-injection/" >【带你学Android】依赖注入之Dagger Hilt&amp; Koin</a>
+			<a href="/2020/11/07/android-dependency-injection/" >【带你学Android】依赖注入之Dagger Hilt&amp; Koin</a>
 		</h3>
 		</div>
 	<div class="col-md-4">
-		<div class="date">post @ 2020-11-06  </div>
+		<div class="date">post @ 2020-11-07  </div>
 		</div>
 	</div>
 	
@@ -280,77 +209,10 @@ var _hmt = _hmt || [];
 
 
 
-<h2 id="什么是Dagger？"><a href="#什么是Dagger？" class="headerlink" title="什么是Dagger？"></a>什么是Dagger？</h2><p>在上面，我们已经手动实现了最基础的依赖注入案例。你可能会说，这么简单啊，几行代码而已的事嘛。可如果这个<code>Car</code>示例中，慢慢的加入更多的需求，可能需要引擎、传动装置、底盘以及其他部件；而要制造引擎，则需要汽缸和火花塞，依赖的类变得越来越多，再这样手动实现依赖注入就变得非常困难。这时，<code>Dagger</code>就该登场了。</p>
-<p>Dagger通过注解的方式，在程序编译过程中生成依赖注入所需要的静态代码，只要您声明类的依赖项并指定如何使用注释满足它们的依赖关系，Dagger 便会在构建时自动执行以上所有操作。Dagger 生成的代码与您手动编写的代码类似。在内部，Dagger 会创建一个对象图，然后它可以参考该图来找到提供类实例的方式。对于图中的每个类，Dagger 都会生成一个 <code>factory</code>类，它会使用该类在内部获取该类型的实例。</p>
-<h2 id="Dagger简单案例"><a href="#Dagger简单案例" class="headerlink" title="Dagger简单案例"></a>Dagger简单案例</h2><p>我们还是使用上面的汽车案例，用Dagger来对它进行改造。</p>
-<h3 id="Inject"><a href="#Inject" class="headerlink" title="Inject"></a>Inject</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Inject 告诉Dagger如何创建实例</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="meta">@Inject</span> <span class="keyword">constructor</span></span>(</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">val</span> engine: Engine</span><br><span class="line">) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">start</span><span class="params">()</span></span> &#123;</span><br><span class="line">        engine.start()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Module 提供创建实例所需要的参数</span></span><br><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarModule</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">provideEngine</span><span class="params">()</span></span>: Engine &#123;</span><br><span class="line">        <span class="keyword">return</span> Engine()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Component"><a href="#Component" class="headerlink" title="Component"></a>Component</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Component 将创建出的实例提供给需要的地方</span></span><br><span class="line"><span class="meta">@Singleton</span></span><br><span class="line"><span class="meta">@Component(modules = [CarModule::class])</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">CarComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">inject</span><span class="params">(activity: <span class="type">MainActivity</span>)</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Use"><a href="#Use" class="headerlink" title="Use"></a>Use</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class MainActivity : AppCompatActivity() &#123;</span><br><span class="line"></span><br><span class="line">    @Inject</span><br><span class="line">    lateinit var car: Car</span><br><span class="line"></span><br><span class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main)</span><br><span class="line"></span><br><span class="line">		&#x2F;&#x2F; 创建Component</span><br><span class="line">        DaggerCarComponent.builder()</span><br><span class="line">            .carModule(CarModule())</span><br><span class="line">            .build()</span><br><span class="line">            .inject(this)</span><br><span class="line"></span><br><span class="line">        car.start()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Hilt实践之MVVM"><a href="#Hilt实践之MVVM" class="headerlink" title="Hilt实践之MVVM"></a>Hilt实践之MVVM</h2><p>清楚了Dagger最最基本的依赖注入原理之后，我们可以直接步入Google最新推出的专为Android而生的依赖注入库<code>Hilt</code>，而不用再去纠结去Dagger在Android中配置的细枝末节，极大的降低了学习成本 ，提升开发效率。</p>
-<p>这里直接看项目源码。</p>
-<p><a target="_blank" rel="noopener" href="https://git.tonekj.com/android-library/hilt-practice">Hilt示例项目</a></p>
-<h2 id="Kotlin依赖注入之Koin"><a href="#Kotlin依赖注入之Koin" class="headerlink" title="Kotlin依赖注入之Koin"></a>Kotlin依赖注入之Koin</h2><p>相较于复杂的Dagger，在Kotlin中还有一个依赖注入框架<code>koin</code>。它运用了大量的Kotlin特性，将依赖注入用dsl（领域特定语言）的方式实现，使依赖注入变得异常的简单。同样，我们准备了和Hilt相同逻辑的示例项目。</p>
-<p><a target="_blank" rel="noopener" href="https://git.tonekj.com/android-library/koin-practice">Koin示例项目</a></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里，我们已经介绍了Android中的依赖注入方式，相信你对依赖注入也有了一定的认识和思考，这里我们回到开始的地方，结合实例重新去思考我们在开头提到的依赖注入带来的三个好处，这些好处到底是如何带来的？</p>
-<ul>
-<li><p><strong>重用代码：</strong>实例中我们的<code>MainViewModel</code>中依赖了<code>UserRepository</code>，我们如果不使用依赖注入，就会new一个<code>UserRepository</code>对象。这样我们之后每次新建页面的<code>ViewModel</code>都需要new一个<code>UserRepository</code>。</p>
-</li>
-<li><p><strong>易于重构：</strong>试想我们的App中的<code>User</code>信息不只是从Web获取，还希望在本地缓存并且在网络异常是从本地获取，我们就需要在<code>UserRepository</code>新增构造参数<code>database: UserDatabase</code>，借助于依赖注入，我们只需要重构<code>repository</code>中的内容，<code>ViewModel</code>中的实现完全不会受到任何影响。</p>
-</li>
-<li><p><strong>易于测试：</strong>这里设计到测试的内容，比如我们测试<code>UserRepository</code>的时候，需要mock依赖的对象，如果每次都需要new一个对象，测试将会变得难以进行。</p>
-</li>
-</ul>
-
+<h2 id="什么是Dagger？"><a href="#什么是Dagger？" class="headerlink" title="什么是Dagger？"></a>什么是Dagger？</h2>
 	
 	</div>
-  <a type="button" href="/2020/11/06/android-dependency-injection/#more" class="btn btn-default more">Read More</a>
-</div>
-
-		
-			
-	
-	<!-- display as entry -->
-<div class="row">
-	<div class="col-md-8">
-		<h3 class="title">
-			<a href="/2020/11/06/hello-world/" >Hello World</a>
-		</h3>
-		</div>
-	<div class="col-md-4">
-		<div class="date">post @ 2020-11-06  </div>
-		</div>
-	</div>
-	
-
-
-			<div class="entry">
-  <div class="row">
-	
-	
-		<p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-	
-	</div>
-  <a type="button" href="/2020/11/06/hello-world/#more" class="btn btn-default more">Read More</a>
+  <a type="button" href="/2020/11/07/android-dependency-injection/#more" class="btn btn-default more">Read More</a>
 </div>
 
 		
@@ -386,31 +248,6 @@ var _hmt = _hmt || [];
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Dao</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">UsersDao</span></span>&#123;</span><br><span class="line">    <span class="meta">@Transaction</span></span><br><span class="line">    <span class="keyword">open</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">setLoggedInUser</span><span class="params">(loggerInUser: <span class="type">User</span>)</span></span>&#123;</span><br><span class="line">		deleteUser(loggedInUser)</span><br><span class="line">        insertUser(loggedInUser)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Query(<span class="meta-string">&quot;DELETE FROM users&quot;</span>)</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">deleteUser</span><span class="params">(user: <span class="type">User</span>)</span></span></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Insert</span></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">insertUser</span><span class="params">(user: <span class="type">User</span>)</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>同样，你也可以从不同的DAO中调用suspend方法。</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Repository</span></span>(<span class="keyword">val</span> database: MyDatabase) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearData</span><span class="params">()</span></span>&#123;</span><br><span class="line">        database.withTransaction &#123;</span><br><span class="line">            database.userDao().deleteLoggerInUser()</span><br><span class="line">            database.commentsDao().deleteComments()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>你可以在创建数据库时通过调用setTransactionExecutor()方法或setQueryExecutor()方法来提供executors去控制它们运行的线程。默认情况下，这将是用于在后台线程上运行查询的相同执行程序。</p>
-<h2 id="编写单元测试"><a href="#编写单元测试" class="headerlink" title="编写单元测试"></a>编写单元测试</h2><p>测试DAO suspend方法和测试其它的suspend方法是一样的。例如，要检查插入用户后我们能够检索它，我们将测试包装在runBlocking块中：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">insertAndGetUser</span><span class="params">()</span></span> = runBlocking &#123;</span><br><span class="line">    <span class="comment">//提供一个插入到数据库中的User</span></span><br><span class="line">    userDao.insertUser(user)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 通过DAO获取Users</span></span><br><span class="line">    <span class="keyword">val</span> usersFromDb = userDao.getUsers()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//验证</span></span><br><span class="line">    assertEquals(listOf(user), userFromDb)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="扒开来看清楚"><a href="#扒开来看清楚" class="headerlink" title="扒开来看清楚"></a>扒开来看清楚</h2><p>进一步，让我们来看看为同步和暂停插入生成的DAO类实现：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Insert</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">insertUserSync</span><span class="params">(user: <span class="type">User</span>)</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Insert</span></span><br><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">insertUser</span><span class="params">(user: <span class="type">User</span>)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>在同步插入的方式中，生成的代码启动事务，执行插入，将事务标记为成功并结束它。同步方法只在任何调用它的线程上的执行insert。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertUserSync</span><span class="params">(<span class="keyword">final</span> User user)</span> </span>&#123;</span><br><span class="line">    _db.beginTransaction();</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        _insertionAdapterOfUser.insert(user);</span><br><span class="line">        _db.setTransactionSuccessful();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        _db.endTransaction();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们再来看看使用suspend关键字的方法是如何处理的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">insertUserSuspend</span><span class="params">(<span class="keyword">final</span> User user,</span></span></span><br><span class="line"><span class="function"><span class="params">                               <span class="keyword">final</span> Continuation&lt;? <span class="keyword">super</span> Unit&gt; p1)</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> CoroutinesRoom.execute(_db,<span class="keyword">new</span> Callable&lt;Unit&gt;()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Unit <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            _db.beginTransaction();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">				_insertionAdapterOfUser.insert(user);</span><br><span class="line">                _db.setTransactionSuccessful();</span><br><span class="line">                <span class="keyword">return</span> kotlin.Unit.INSTANCE;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">				_db.endTransaction();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, p1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>生成的代码中确保了插入不发生在UI线程上。在我们的suspend函数实现中，同步insert方法中的相同逻辑包含在<code>Callable</code>中。Room调用<code>CoroutinesRoom.execute</code>挂起函数，该函数切换到后台调度程序，具体取决于数据库是否已打开且我们是否处于事务中。这是函数的实现：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JvmStatic</span></span><br><span class="line"><span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;R&gt;</span> <span class="title">execute</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	db: <span class="type">RoomDatabase</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    inTransaction: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    callable: <span class="type">Callable</span>&lt;<span class="type">R</span>&gt;</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>: R &#123;</span><br><span class="line">    <span class="keyword">if</span> (db.isOpen &amp;&amp; db.inTransaction) &#123;</span><br><span class="line">        <span class="keyword">return</span> callable.call()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">val</span> context = coroutineContext[TransactionElement]?.transactionDispatcher</span><br><span class="line">    	?: <span class="keyword">if</span> (inTransaction) db.transactionDispatcher <span class="keyword">else</span> db.queryDispatcher</span><br><span class="line">    <span class="keyword">return</span> withContext(context) &#123;</span><br><span class="line">        callable.call()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>情形一：数据库打开，且我们在事务中</strong></p>
-<p>此时我们直接执行callable即可</p>
-<p><strong>情形二：其他</strong></p>
-<p>Room确保Callable中的工作已完成（call方法在后台执行）。</p>
-<p>Room会使用不同的dispatcher来处理事务和查询。这些是从构建数据库时提供的执行程序派生的，或者默认情况下将使用系统组件IO执行程序，这和LiveData执行后台任务的executor是一样的。</p>
-<p>在应用程序中开始使用Room和coroutines，保证数据库工作在非UI Dispatcher上运行。使用suspend修饰符标记您的DAO方法，并从其他挂起函数或协程中调用它们！</p>
-
 	
 	</div>
   <a type="button" href="/2019/01/09/android-room-coroutines/#more" class="btn btn-default more">Read More</a>
@@ -464,11 +301,7 @@ var _hmt = _hmt || [];
       </li>
     
       <li>
-        <a href="/2020/11/06/android-dependency-injection/" ><i class="fa fa-file-o"></i>【带你学Android】依赖注入之Dagger Hil...</a>
-      </li>
-    
-      <li>
-        <a href="/2020/11/06/hello-world/" ><i class="fa fa-file-o"></i>Hello World</a>
+        <a href="/2020/11/07/android-dependency-injection/" ><i class="fa fa-file-o"></i>【带你学Android】依赖注入之Dagger Hil...</a>
       </li>
     
       <li>
