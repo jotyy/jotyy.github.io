@@ -143,6 +143,53 @@ var _hmt = _hmt || [];
 <div class="row">
 	<div class="col-md-8">
 		<h3 class="title">
+			<a href="/2020/11/26/allure-api-pytest/" >使用Pytest+requests+Allure实现接口自动化测试</a>
+		</h3>
+		</div>
+	<div class="col-md-4">
+		<div class="date">post @ 2020-11-26  </div>
+		</div>
+	</div>
+	
+
+
+			<div class="entry">
+  <div class="row">
+	
+	
+		<h2 id="Step-1-请求接口"><a href="#Step-1-请求接口" class="headerlink" title="Step 1. 请求接口"></a>Step 1. 请求接口</h2><h3 id="注册接口信息"><a href="#注册接口信息" class="headerlink" title="注册接口信息"></a>注册接口信息</h3><p>首先来看我们待测试的接口：</p>
+<ul>
+<li><p>地址：<code>https://jotyy.top/crud/register</code></p>
+</li>
+<li><p>请求类型：<code>Post</code></p>
+</li>
+<li><p>请求头：<code>Content-type:multipart/form-data</code></p>
+</li>
+<li><p>请求参数：</p>
+<ul>
+<li>user_name</li>
+<li>nickname</li>
+<li>password</li>
+</ul>
+</li>
+</ul>
+<h3 id="Restful封装"><a href="#Restful封装" class="headerlink" title="Restful封装"></a>Restful封装</h3><p>要测试该接口，我们对接口请求做一个封装（详见core/rest_client.py)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RestClient</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, api_root_url</span>):</span></span><br><span class="line">        self.api_root_url = api_root_url</span><br><span class="line">        self.session = requests.session()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, url, data=<span class="literal">None</span>, json=<span class="literal">None</span>, **kwargs</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.request(url, <span class="string">&quot;POST&quot;</span>, data, json, **kwargs)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 调用requests库的请求方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">request</span>(<span class="params">self, url, method, data=<span class="literal">None</span>, json=<span class="literal">None</span>, **kwargs</span>):</span></span><br><span class="line">        url = self.api_root_url + url</span><br><span class="line">        headers = <span class="built_in">dict</span>(**kwargs).get(<span class="string">&quot;headers&quot;</span>)</span><br><span class="line">        params = <span class="built_in">dict</span>(**kwargs).get(<span class="string">&quot;params&quot;</span>)</span><br><span class="line">        files = <span class="built_in">dict</span>(**kwargs).get(<span class="string">&quot;params&quot;</span>)</span><br><span class="line">        cookies = <span class="built_in">dict</span>(**kwargs).get(<span class="string">&quot;params&quot;</span>)</span><br><span class="line">        self.request_log(url, method, data, json, params, headers, files, cookies)</span><br><span class="line">        <span class="keyword">if</span> method == <span class="string">&quot;POST&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> requests.post(url, data, json, **kwargs)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="构建User-Client"><a href="#构建User-Client" class="headerlink" title="构建User Client"></a>构建User Client</h3><p>接下来我们开始构建User类，用于请求user中的接口(api/user.py)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BASE_URL = <span class="string">&quot;https://jotyy.top/crud&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span>(<span class="params">RestClient</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, api_base_url, **kwargs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(User, self).__init__(api_base_url, **kwargs)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">register</span>(<span class="params">self, **kwargs</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.post(<span class="string">&quot;/register&quot;</span>, **kwargs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">user = User(BASE_URL)</span><br></pre></td></tr></table></figure>
+	
+	</div>
+  <a type="button" href="/2020/11/26/allure-api-pytest/#more" class="btn btn-default more">Read More</a>
+</div>
+
+		
+			
+	
+	<!-- display as entry -->
+<div class="row">
+	<div class="col-md-8">
+		<h3 class="title">
 			<a href="/2020/11/23/flutter-mixin/" >flutter-mixin</a>
 		</h3>
 		</div>
@@ -296,6 +343,8 @@ var _hmt = _hmt || [];
 		
 			<li><a href="/tags/flutter/">flutter<span>1</span></a></li>
 		
+			<li><a href="/tags/python/">python<span>1</span></a></li>
+		
 		 
 		</ul>
 	</div>
@@ -306,6 +355,10 @@ var _hmt = _hmt || [];
 <div class="widget">
   <h4>Recent Posts</h4>
   <ul class="entry list-unstyled">
+    
+      <li>
+        <a href="/2020/11/26/allure-api-pytest/" ><i class="fa fa-file-o"></i>使用Pytest+requests+Allure实现接...</a>
+      </li>
     
       <li>
         <a href="/2020/11/23/flutter-mixin/" ><i class="fa fa-file-o"></i>flutter-mixin</a>
